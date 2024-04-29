@@ -57,10 +57,30 @@ export default class TodosController {
     const trx = await db.transaction()
     try {
       await request.validateUsing(createTodoValidator)
+
+      const userId = await getQueryParams('uuid', request.qs())
+
+      if (!userId) {
+        return response.forbidden({
+          success: false,
+          message: 'uuid on query params not found.',
+        })
+      }
+
+      const userIsReady = await User.query().where('id', userId).first()
+
+      if (!userIsReady) {
+        return response.forbidden({
+          success: false,
+          message: 'User not found',
+        })
+      }
+
       const todos = await request.input('todos')
       const todosWithId = await todos.map((todo: object) => {
         return {
           id: uuid(),
+          user_id: userId,
           ...todo,
           created_at: DateTime.utc().toSQLDate(),
           updated_at: DateTime.utc().toSQLDate(),
@@ -124,19 +144,17 @@ export default class TodosController {
     }
   }
 
-  async deleteTodo({ request, response, params }: HttpContext) {
+  async deleteTodo({ response, params }: HttpContext) {
     const trx = await db.transaction()
     // @ts-ignore
-    const userId: string = await request.header('X-Auth-Uuid')
 
     try {
       await trx
         .query()
-        .where('user_id', userId)
         .where('id', params.id)
         .from('todos')
         .update({
-          deletedAt: DateTime.utc().toSQLDate(),
+          deleted_at: DateTime.utc().toSQLDate(),
         })
         .then(async () => {
           trx.commit()
