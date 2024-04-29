@@ -17,7 +17,7 @@ export const createTodoValidator = vine.compile(
 
 export const updateTodoValidator = vine.compile(
   vine.object({
-    id: vine.string().uuid(),
+    // id: vine.string().uuid(),
     todo: vine.string().optional(),
     description: vine.string().optional(),
     priority: vine.string().in(['low', 'medium', 'high']).optional(),
