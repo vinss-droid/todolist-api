@@ -46,6 +46,6 @@ export default class Todo extends BaseModel {
   @beforeCreate()
   static assignUuid(todo: Todo) {
     let uuid = uuidV4()
-    todo.id = uuid()
+    todo.id = uuid
   }
 }

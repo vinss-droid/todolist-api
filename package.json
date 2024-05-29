@@ -43,6 +43,7 @@
     "@swc/core": "^1.4.16",
     "@types/luxon": "^3.4.2",
     "@types/node": "^20.12.7",
+    "@types/uuid": "^9.0.8",
     "eslint": "^8.57.0",
     "hot-hook": "^0.2.1",
     "pino-pretty": "^11.0.0",
